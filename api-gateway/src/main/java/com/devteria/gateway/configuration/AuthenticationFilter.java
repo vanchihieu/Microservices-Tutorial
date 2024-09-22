@@ -22,7 +22,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -41,11 +40,6 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             return unauthenticated(exchange.getResponse());
 
         String token = authHeader.get(0).replace("Bearer ", "");
-        log.info("Token: {}", token);
-
-        identityService.introspect(token).subscribe(introspectResponseApiResponse -> {
-            log.info("result: {}", introspectResponseApiResponse.getResult().isValid());
-        });
 
         return identityService.introspect(token).flatMap(introspectResponse -> {
             if (introspectResponse.getResult().isValid())
